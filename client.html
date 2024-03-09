@@ -40,6 +40,13 @@
                     messageInput.value ="";
                 }
             })
+
+
+            socket.on('broadcast_message', (message) =>{
+                const messageElement = document.createElement("div");
+                messageElement.innerText = message;
+                messageList.appendChild(messageElement);
+            })
         </script>
 </body>
 </html>
