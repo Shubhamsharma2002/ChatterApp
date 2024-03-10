@@ -4,15 +4,16 @@
   "description": "chating app using socekt .io",
   "main": "index.js",
   "scripts": {
-    "start":"nodemon index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shubham Sharma",
   "license": "ISC",
-  "type":"module",
+  "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.3",
+    "mongoose": "^8.2.1",
     "nodemon": "^3.1.0",
     "socket.io": "^4.7.4"
   }

@@ -19,7 +19,9 @@
 
         <script>
             const socket = io.connect('http://localhost:3000');
+             const username = prompt("Enter you name");
 
+             socket.emit("join", username);
             // get the element
             const messageInput = document.getElementById("message-input");
             const messageList  = document.getElementById("message-list");
@@ -34,17 +36,24 @@
 
                     // add message to the list
                     const messageElement = document.createElement("div");
-                    messageElement.innerText = message;
+                    messageElement.innerText = username + ":" + message;
                     messageList.appendChild(messageElement);
 
                     messageInput.value ="";
                 }
             })
 
+            socket.on('load_message', (message) =>{
+                message.forEach(message => {
+                    const messageElement = document.createElement("div");
+                messageElement.innerText = new Date(message.timestamp).toDateString()+ " "+ message.username+":"+ message.message;
+                messageList.appendChild(messageElement);
+                });
+            })
 
-            socket.on('broadcast_message', (message) =>{
+            socket.on('broadcast_message', (usermessage) =>{
                 const messageElement = document.createElement("div");
-                messageElement.innerText = message;
+                messageElement.innerText =usermessage.username+":"+ usermessage.message;
                 messageList.appendChild(messageElement);
             })
         </script>
