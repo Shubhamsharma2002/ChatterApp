@@ -3,59 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
+    <title>Chatt->App</title>
+    <link rel="stylesheet" href="client.css">
 </head>
 <body>
-
+     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  
     <div class="chat-container">
-        <div id="message-list">
-            <!-- message conatin -->
+        <div id="message-list" class="message-list">
+
         </div>
-
-        <input type="text"  id="message-input">
-        <button id="send-message">Send</button>
+        <div class="input-are">
+            <input type="text" id="message-input" class="input-msg" placeholder="Type something.." required>
+            <input type="submit" id="send-message" value="Send">
+        </div>
+        
     </div>
-        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
 
-        <script>
-            const socket = io.connect('http://localhost:3000');
-             const username = prompt("Enter you name");
+    
 
-             socket.emit("join", username);
-            // get the element
-            const messageInput = document.getElementById("message-input");
-            const messageList  = document.getElementById("message-list");
-            const sendButton = document.getElementById("send-message");
-            
-            sendButton.addEventListener("click", function(){
-                // read the message from input and send to server
+     <script>
+        const socket = io.connect('http://localhost:3000');
 
-                const message = messageInput.value;
-                if(message){
-                    socket.emit('new_message', message);
+        const messageInput = document.getElementById("message-input");
+        const messagelist = document.getElementById("message-list");
+        const sendButton = document.getElementById("send-message");
 
-                    // add message to the list
-                    const messageElement = document.createElement("div");
-                    messageElement.innerText = username + ":" + message;
-                    messageList.appendChild(messageElement);
+        sendButton.addEventListener("click", function (){
+            // console.log("send button clicked")
 
-                    messageInput.value ="";
-                }
-            })
 
-            socket.on('load_message', (message) =>{
-                message.forEach(message => {
-                    const messageElement = document.createElement("div");
-                messageElement.innerText = new Date(message.timestamp).toDateString()+ " "+ message.username+":"+ message.message;
-                messageList.appendChild(messageElement);
-                });
-            })
-
-            socket.on('broadcast_message', (usermessage) =>{
+            const message = messageInput.value;
+            console.log(message);
+            if(message){
                 const messageElement = document.createElement("div");
-                messageElement.innerText =usermessage.username+":"+ usermessage.message;
-                messageList.appendChild(messageElement);
-            })
-        </script>
+                messageElement.innerText = message;
+                messagelist.appendChild(messageElement);
+                messageInput.value = " ";
+            }
+        })
+     </script>
 </body>
 </html>
