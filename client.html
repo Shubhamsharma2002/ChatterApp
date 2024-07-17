@@ -25,6 +25,9 @@
      <script>
         const socket = io.connect('http://localhost:3000');
 
+        const userName = prompt("Enter your name..");
+        socket.emit("join", userName);
+
         const messageInput = document.getElementById("message-input");
         const messagelist = document.getElementById("message-list");
         const sendButton = document.getElementById("send-message");
@@ -36,12 +39,26 @@
             const message = messageInput.value;
             console.log(message);
             if(message){
+                socket.emit('new-message',message);
                 const messageElement = document.createElement("div");
-                messageElement.innerText = message;
+                messageElement.innerText = userName+ " "+ message;
                 messagelist.appendChild(messageElement);
                 messageInput.value = " ";
             }
         })
-     </script>
+        socket.on('load_message', (messages) =>{
+        messages.forEach(message => {
+            const messageElement = document.createElement("div");
+            messageElement.innerText =message.username+" "+message.message;
+            messagelist.appendChild(messageElement);
+        });
+    })
+        // listining the broadcast message and add to list
+         socket.on('broadcast_message', (userMessage) =>{
+            const messageElement = document.createElement("div");
+            messageElement.innerText =userMessage.userName+" "+userMessage.message;
+            messagelist.appendChild(messageElement);
+         })
+</script>
 </body>
 </html>

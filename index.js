@@ -3,8 +3,11 @@ import { Server } from "socket.io";
 import cors from "cors";
 import http from "http"
 import { Socket } from "dgram";
-// import { connect}  from "./mongoose.js";
-// import { chatModel } from "./chatSchema.js";
+import { connect } from "./mongoose.js";
+import { chatModel } from "./chatSchema.js";
+import { timeStamp } from "console";
+
+
 
 const app = express();
 // 1. cretae server using http
@@ -23,6 +26,32 @@ const io = new Server(server,{
 
 io.on('connection', (socket) =>{
     console.log("connection is establish");
+    socket.on("join",(data)=>{
+        socket.userName = data;
+
+        chatModel.find().sort({timestamp:1}).limit(50)
+        .then(messages=>{
+            socket.emit("load_message", messages)
+        }).catch(err=>{
+            console.log(err)
+        })
+    })
+
+   
+    socket.on('new-message', (message)=>{
+        let userMessage = {
+            userName : socket.userName,
+            message : message
+        }
+
+        const newChat = new chatModel({
+            username:socket.userName,
+            message:message,
+            timestamp:new Date()
+        })
+        newChat.save();
+        socket.broadcast.emit('broadcast_message', userMessage);
+    })
     socket.on("disconnect",() =>{
         console.log("connection is disconnected");
     })
@@ -31,6 +60,7 @@ io.on('connection', (socket) =>{
 
 server.listen(3000,() =>{
     console.log("App is listining on 3000")
+    connect();
 })
 
 
